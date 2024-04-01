@@ -46,6 +46,7 @@ def cached_eval_script(problem, index) -> dict:
         for k in result_dict.keys():
             result_yaml[k] = result_dict[k]
             result_yaml["timestamp"] = int(time.time())
+        result_yaml["completion"] = problem["completions"][index]
         return result_yaml
 
 
@@ -53,7 +54,7 @@ def get_test_results_json_path(
     output_dir: str, problem_json_path: str, input_dir: Path
 ) -> Path:
     suffixes = ".results.json"
-    problem_name = problem_json_path[: -len(".json")]
+    problem_name = problem_json_path.split("/")[-1][: -len(".json")]
     if input_dir:
         raise ValueError("input dir given")
         return Path(output_dir) / (
@@ -71,7 +72,7 @@ def evaluate_problem(
         output_dir, problem_json_path, input_dir
     )
     test_results_path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
-
+    
     test_results = problem.copy()
     del test_results["completions"]
     test_results["results"] = []

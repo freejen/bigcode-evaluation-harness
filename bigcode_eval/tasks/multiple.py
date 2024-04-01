@@ -89,7 +89,8 @@ class GeneralMultiPLE(Task):
         self.dataset = load_dataset(
             GeneralMultiPLE.DATASET_PATH,
             self.DATASET_NAME,
-            revision=self.DATASET_REVISION)
+            revision=self.DATASET_REVISION,
+            trust_remote_code=True)
         stop_words = self.dataset["test"][0]["stop_tokens"] + ["<file_sep>"]
         super().__init__(
             stop_words=stop_words,
@@ -128,7 +129,7 @@ class GeneralMultiPLE(Task):
         completion = generation[len(prompt) :]
         return prompt + self._stop_at_stop_token(completion, self.stop_words)
 
-    def process_results(self, generations, references):
+    def process_results(self, generations, references, task_name):
         """Takes the list of LM generations and evaluates them against ground truth references,
         returning the metric for the generations.
         :param generations: list(list(str))
@@ -144,6 +145,8 @@ class GeneralMultiPLE(Task):
         ]
         # a common temp dir for all the problems
         temp_dir = tempfile.gettempdir()
+        temp_dir = f"tmp/{task_name}"
+        os.makedirs(temp_dir, exist_ok=True)
         list_files = []
         for (prompt_name, generation, reference) in zip(
             prompts_names, generations, references
@@ -163,7 +166,6 @@ class GeneralMultiPLE(Task):
         print(
             f"Saved {len(list_files)} problems in {temp_dir} for evaluation, each problem has {len(generations[0])} completions"
         )
-
         # execute the problems to evaluate them
         max_workers = cpu_count() - 1 if cpu_count() > 1 else 1
         for file in tqdm(list_files):
