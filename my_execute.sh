@@ -39,7 +39,7 @@ get_task_name() {
     esac
 }
 
-RUNS=(cwe-077_rb_multiple-rb_fim cwe-326_go_multiple-go_fim cwe-079_js_multiple-js_fim cwe-502_js_multiple-js_fim cwe-131_cpp_multiple-cpp_fim cwe-193_cpp_multiple-cpp_fim cwe-416_cpp_multiple-cpp_p_fim cwe-476_cpp_multiple-cpp_fim cwe-787_cpp_multiple-cpp_fim cwe-020_py_multiple-py_fim cwe-022_py_multiple-py_fim cwe-078_py_multiple-py_fim cwe-089_py_multiple-py_fim cwe-090_py_multiple-py_fim cwe-327_py_multiple-py_fim cwe-943_py_multiple-py_fim)
+RUNS=(cwe-077_rb_multiple-rb_fim cwe-326_go_multiple-go_fim cwe-079_js_multiple-js_fim cwe-502_js_multiple-js_fim cwe-131_cpp_multiple-cpp_fim cwe-193_cpp_multiple-cpp_fim cwe-416_cpp_p_multiple-cpp_fim cwe-476_cpp_multiple-cpp_fim cwe-787_cpp_multiple-cpp_fim cwe-020_py_multiple-py_fim cwe-022_py_multiple-py_fim cwe-078_py_multiple-py_fim cwe-089_py_multiple-py_fim cwe-090_py_multiple-py_fim cwe-327_py_multiple-py_fim cwe-943_py_multiple-py_fim)
 
 for RUN in ${RUNS[@]}; do
     task_name=$(get_task_name $RUN)
