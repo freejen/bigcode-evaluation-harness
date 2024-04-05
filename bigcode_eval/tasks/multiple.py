@@ -148,9 +148,14 @@ class GeneralMultiPLE(Task):
         temp_dir = f"tmp/{task_name}"
         os.makedirs(temp_dir, exist_ok=True)
         list_files = []
+        good_problems = 0
         for (prompt_name, generation, reference) in zip(
             prompts_names, generations, references
         ):
+            if generation[0] == '':
+                continue
+            good_problems += 1
+
             problem = {
                 "name": prompt_name["name"],
                 "language": self.language,
@@ -164,7 +169,7 @@ class GeneralMultiPLE(Task):
             with open(temp_file_name, "wt") as f:
                 json.dump(problem, f)
         print(
-            f"Saved {len(list_files)} problems in {temp_dir} for evaluation, each problem has {len(generations[0])} completions"
+            f"Saved {good_problems} problems in {temp_dir} for evaluation, each problem has {len(generations[0])} completions"
         )
         # execute the problems to evaluate them
         max_workers = cpu_count() - 1 if cpu_count() > 1 else 1
