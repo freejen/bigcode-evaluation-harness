@@ -6,6 +6,7 @@ langs = ["js", "rb", "go", "cpp"]
 
 
 for lang in langs:
+    print(lang)
     base_path = f"tmp/multiple-{lang}"
     problems = datasets.load_dataset("nuprl/MultiPL-E", f"humaneval-{lang}", split="test", trust_remote_code=True)
 
@@ -26,5 +27,5 @@ for lang in langs:
 
     print(f"Number of empty solutions: {num_empty}")
 
-    with open(f"canonical_solutions_{lang}.json", "w") as f:
+    with open(f"../sec-gen/multipl-e/canonical_solutions_{lang}.json", "w") as f:
         json.dump(selected_solutions, f, indent=4)

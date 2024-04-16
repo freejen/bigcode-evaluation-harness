@@ -146,6 +146,12 @@ class GeneralMultiPLE(Task):
         # a common temp dir for all the problems
         temp_dir = tempfile.gettempdir()
         temp_dir = f"tmp/{task_name}"
+        # delete the directory temp_dir
+        if os.path.exists(temp_dir):
+            for file in os.listdir(temp_dir):
+                os.remove(os.path.join(temp_dir, file))
+            os.rmdir(temp_dir)
+        
         os.makedirs(temp_dir, exist_ok=True)
         list_files = []
         good_problems = 0
@@ -163,6 +169,11 @@ class GeneralMultiPLE(Task):
                 "completions": generation,
                 "tests": reference,
             }
+            if "cpp" in task_name:
+                problem["tests"] = problem["tests"][1:]
+            # print(repr(problem["tests"]))
+            # input()
+
             # each problem is save in a json file
             temp_file_name = os.path.join(temp_dir, f"{prompt_name['name']}.json")
             list_files.append(temp_file_name)
