@@ -1,4 +1,4 @@
-set -e
+# set -e
 
 # Attacks
 BASE=$1
