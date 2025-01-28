@@ -103,8 +103,9 @@ class Evaluator:
             os.environ["TOKENIZERS_PARALLELISM"] = "false"
             if self.allow_code_execution and task.requires_execution:
                 os.environ["HF_ALLOW_CODE_EVAL"] = "1"
+            os.environ["GOFLAGS"] = "-mod=mod"
             print("Evaluating generations...")
-            results = task.process_results(generations, references, task_name)
+            results = task.process_results(generations, references)
             return results
 
     def save_json_files(
