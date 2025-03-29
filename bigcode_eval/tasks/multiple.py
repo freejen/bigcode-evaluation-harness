@@ -14,6 +14,7 @@ import tempfile
 from multiprocessing import cpu_count
 from pathlib import Path
 from time import time
+import uuid
 
 import numpy as np
 from datasets import load_dataset
@@ -145,7 +146,7 @@ class GeneralMultiPLE(Task):
         return [gen_dict[name] for name in prompt_names]        
 
 
-    def process_results(self, generations, references, task_name):
+    def process_results(self, generations, references):
         """Takes the list of LM generations and evaluates them against ground truth references,
         returning the metric for the generations.
         :param generations: list(list(str))
@@ -153,6 +154,7 @@ class GeneralMultiPLE(Task):
         :param references: list(str)
             list of str containing refrences
         """
+        task_name = f"multiple-{self.language}"
         # get prompts and problem names
         prompts_names = [
             {"prompt": doc["prompt"], "name": doc["name"]}
@@ -166,7 +168,7 @@ class GeneralMultiPLE(Task):
 
         # a common temp dir for all the problems
         temp_dir = tempfile.gettempdir()
-        temp_dir = f"tmp/{task_name}"
+        temp_dir = f"tmp/{task_name}-{uuid.uuid4().hex}"
         # delete the directory temp_dir
         if os.path.exists(temp_dir):
             for file in os.listdir(temp_dir):
@@ -226,11 +228,15 @@ class GeneralMultiPLE(Task):
             if temp_dir.split("/")[-1] != ""
             else temp_dir.split("/")[-2]
         )
+        result_dict = {
+                str(p): list(for_file(p)) for p in Path(temp_dir).glob("*.results.json")
+        }
         results = {
             f"pass@{k}": v
             for k, v in zip([1, 10, 100], result)
             if k <= len(generations[0])
         }
+        results["all"] = result_dict
         return results
 
 
